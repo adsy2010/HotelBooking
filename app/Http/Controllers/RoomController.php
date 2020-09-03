@@ -15,6 +15,7 @@ class RoomController extends Controller
     public function index()
     {
         //
+        return response()->json(['status' => 'ok', 'data' => Room::all()]);
     }
 
     /**
