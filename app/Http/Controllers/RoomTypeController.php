@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+
 use App\RoomType;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -40,15 +42,23 @@ class RoomTypeController extends Controller
     public function store(Request $request)
     {
         //
-        $roomType = RoomType::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'hasTV' => $request->hasTV,
-            'hasFacilities' => $request->hasFacilities
-        ]);
-        $roomType->save();
+        try{
+            $roomType = RoomType::create([
+                'name' => $request->name,
+                'description' => $request->description,
+                'hasTV' => $request->hasTV,
+                'hasFacilities' => $request->hasFacilities
+            ]);
+            $roomType->save();
 
-        return response()->json(['status' => 'ok', 'data' => $roomType]);
+            return response()->json(['status' => 'ok', 'data' => $roomType]);
+        }
+        catch (Exception $exception)
+        {
+
+            return response()->json(['status' => 'failed to create room type', 'data' => $exception->getMessage()]);
+        }
+
     }
 
     /**
@@ -82,28 +92,40 @@ class RoomTypeController extends Controller
      * @param RoomType $roomType
      * @return JsonResponse|Response
      */
-    public function update(Request $request, RoomType $roomType)
+    public function update(Request $request)
     {
         //
-        $roomType->name = $request->name;
-        $roomType->description = $request->description;
-        $roomType->hasTV = $request->hasTV;
-        $roomType->hasFacilities = $request->hasFacilities;
-        $roomType->save();
+        try {
+            $roomType = RoomType::find($request->roomtype);
+            $roomType->name = $request->name;
+            $roomType->description = $request->description;
+            $roomType->hasTV = $request->hasTV;
+            $roomType->hasFacilities = $request->hasFacilities;
+            $roomType->save();
 
-        return response()->json(['status' => 'ok', 'data' => $roomType]);
+            return response()->json(['status' => 'ok', 'data' => $roomType]);
+        }
+        catch (Exception $exception)
+        {
+            return response()->json(['status' => 'unable to update room type', 'data' => $exception->getMessage()]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param RoomType $roomType
      * @return JsonResponse|Response
      */
-    public function destroy(RoomType $roomType)
+    public function destroy(Request $request)
     {
         //
-        $roomType->delete();
-        return response()->json(['status' => 'ok']);
+        try {
+            RoomType::findOrFail($request->roomtype)->delete();
+            return response()->json(['status' => 'ok', 'data' => $request->roomtype]);
+        }
+        catch (Exception $exception)
+        {
+            return response()->json(['status' => 'unable to delete room type', 'data' => $exception->getMessage()]);
+        }
     }
 }
