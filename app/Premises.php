@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @method static create(array $array)
+ * @method static find($premise)
  */
 class Premises extends Model
 {
     //
+    protected $fillable = ['address', 'city', 'postcode', 'tel', 'email', 'description'];
     public function rooms()
     {
         return $this->hasMany('App\Room', 'premise', 'id');
