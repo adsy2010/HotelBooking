@@ -19,6 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::resource('premise', 'PremiseController');
+Route::resource('premise', 'PremisesController');
 Route::resource('rooms', 'RoomController');
 Route::resource('roomtypes', 'RoomTypeController');
